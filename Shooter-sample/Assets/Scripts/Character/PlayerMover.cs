@@ -5,12 +5,16 @@ namespace Character
     [RequireComponent(typeof(CharacterController))]
     public class PlayerMover : MonoBehaviour
     {
+        [Header("Movement")]
         [SerializeField] private Camera _camera;
         [SerializeField] private float _forwardSpeed = 3;
         [SerializeField] private float _strafeSpeed = 3;
         [SerializeField] private float _jumpSpeed = 3;
         [SerializeField] private float _gravityFactor = 1.5f;
 
+        [Header("Weapon")]
+        [SerializeField] private Shotgun _shotgun;
+        
         private CharacterController _characterController;
         private Vector3 _verticalVelocity;
 
@@ -20,6 +24,16 @@ namespace Character
         }
 
         private void Update()
+        {
+            Movement();
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                _shotgun.Shoot(_camera.transform.position, _camera.transform.forward);
+            }
+        }
+
+        private void Movement()
         {
             Vector3 forward = Vector3.ProjectOnPlane(_camera.transform.forward, Vector3.up).normalized;
             Vector3 right = Vector3.ProjectOnPlane(_camera.transform.right, Vector3.up).normalized;
