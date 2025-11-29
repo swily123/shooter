@@ -1,3 +1,4 @@
+using ShotgunDirectory;
 using UnityEngine;
 
 namespace Character
@@ -6,7 +7,7 @@ namespace Character
     public class PlayerMover : MonoBehaviour
     {
         [Header("Movement")]
-        [SerializeField] private Camera _camera;
+        [SerializeField] private Transform _camera;
         [SerializeField] private float _forwardSpeed = 3;
         [SerializeField] private float _strafeSpeed = 3;
         [SerializeField] private float _jumpSpeed = 3;
@@ -29,14 +30,14 @@ namespace Character
 
             if (Input.GetMouseButtonDown(0))
             {
-                _shotgun.Shoot(_camera.transform.position, _camera.transform.forward);
+                _shotgun.Shoot(_camera.position, _camera.forward);
             }
         }
 
         private void Movement()
         {
-            Vector3 forward = Vector3.ProjectOnPlane(_camera.transform.forward, Vector3.up).normalized;
-            Vector3 right = Vector3.ProjectOnPlane(_camera.transform.right, Vector3.up).normalized;
+            Vector3 forward = Vector3.ProjectOnPlane(_camera.forward, Vector3.up).normalized;
+            Vector3 right = Vector3.ProjectOnPlane(_camera.right, Vector3.up).normalized;
             
             if (_characterController.isGrounded)
             {
