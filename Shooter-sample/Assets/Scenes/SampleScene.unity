@@ -3817,6 +3817,9 @@ MonoBehaviour:
   _inputReader: {fileID: 1472923474}
   _camera: {fileID: 963194228}
   _shotgun: {fileID: 1056200323}
+  _shotgunAnimator: {fileID: 1056200328}
+  _shotEffect: {fileID: 1056200324}
+  _cameraShake: {fileID: 963194229}
 --- !u!1 &1008153098
 GameObject:
   m_ObjectHideFlags: 0
@@ -4084,10 +4087,7 @@ MonoBehaviour:
     m_Bits: 19
   _maxDistance: 500
   _impactForce: 300
-  _shotgunAnimator: {fileID: 1056200328}
-  _shotEffect: {fileID: 1056200324}
   _decalSpawner: {fileID: 1056200327}
-  _cameraShake: {fileID: 963194229}
 --- !u!114 &1056200324
 MonoBehaviour:
   m_ObjectHideFlags: 0

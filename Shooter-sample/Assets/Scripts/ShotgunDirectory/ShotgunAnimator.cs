@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace ShotgunDirectory
 {
@@ -7,10 +8,17 @@ namespace ShotgunDirectory
         [SerializeField] private Animator _shotAnimator;
         
         private readonly int _shootAndReload = Animator.StringToHash("ShootAndReload");
-
-        public void LaunchShotAndReloadAnimation()
+        private Action _onEndAnimation;
+        
+        public void LaunchShotAndReloadAnimation(Action onEndAnimation)
         {
             _shotAnimator.SetTrigger(_shootAndReload);
+            _onEndAnimation = onEndAnimation;
+        }
+
+        public void OnAnimationFinished()
+        {
+            _onEndAnimation?.Invoke();
         }
     }
 }
