@@ -1,48 +1,46 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Character
 {
     public class PlayerCameraMover : MonoBehaviour
     {
+        [SerializeField] private InputReader _inputReader;
         [SerializeField] private Transform _camera;
+        [SerializeField] private Transform _player;
         [SerializeField] private float _horizontalSensitivity = 2;
         [SerializeField] private float _verticalSensitivity = 2;
         [SerializeField] private float _verticalMinAngle = -89f;
         [SerializeField] private float _verticalMaxAngle = 89f ;
         
         private float _cameraAngle;
-        private bool _isActive = true;
-        
+        private readonly bool _isActive = true;
+
+        private void OnEnable()
+        {
+            _inputReader.MouseMoving += Moving;
+        }
+
+        private void OnDisable()
+        {
+            _inputReader.MouseMoving -= Moving;
+        }
+
         private void Start()
         {
             _cameraAngle = _camera.localEulerAngles.x;
         }
-
-        private void Update()
-        {
-           Moving();
-        }
-
-        public void StopMoving()
-        {
-            _isActive = false;
-        }
-
-        public void ResumeMoving()
-        {
-            _isActive = true;
-        }
         
-        private void Moving()
+        private void Moving(Vector2 input)
         {
             if (_isActive == false)
                 return;
             
-            _cameraAngle -= Input.GetAxis("Mouse Y") * _verticalSensitivity;
+            _cameraAngle -= input.y * _verticalSensitivity;
             _cameraAngle = Mathf.Clamp(_cameraAngle, _verticalMinAngle, _verticalMaxAngle);
             _camera.localEulerAngles = Vector3.right * _cameraAngle;
             
-            transform.Rotate(Vector3.up * (_horizontalSensitivity * Input.GetAxis("Mouse X")));
+            _player.Rotate(Vector3.up * (_horizontalSensitivity * input.x));
         }
     }
 }

@@ -23,6 +23,6 @@ namespace HealthDirectory
             }
         }
 
-        internal abstract void Die();
+        protected abstract void Die();
     }
 }

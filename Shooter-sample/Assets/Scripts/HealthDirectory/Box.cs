@@ -1,12 +1,10 @@
-﻿using UnityEngine;
-
-namespace HealthDirectory
+﻿namespace HealthDirectory
 {
     public class Box : Health
     {
-        internal override void Die()
+        protected override void Die()
         {
-            Object.Destroy(gameObject);
+            Destroy(gameObject);
         }
     }
 }

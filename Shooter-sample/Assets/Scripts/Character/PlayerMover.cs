@@ -1,4 +1,3 @@
-using ShotgunDirectory;
 using UnityEngine;
 
 namespace Character
@@ -6,32 +5,37 @@ namespace Character
     [RequireComponent(typeof(CharacterController))]
     public class PlayerMover : MonoBehaviour
     {
-        [Header("Movement")]
+        [SerializeField] private InputReader _inputReader;
         [SerializeField] private Transform _camera;
         [SerializeField] private float _forwardSpeed = 3;
         [SerializeField] private float _strafeSpeed = 3;
         [SerializeField] private float _jumpSpeed = 3;
         [SerializeField] private float _gravityFactor = 1.5f;
-
-        [Header("Weapon")]
-        [SerializeField] private Shotgun _shotgun;
         
         private CharacterController _characterController;
-        private Vector3 _verticalVelocity;
-
+        private float _verticalVelocity;
+        private Vector2 _moveInput;
+        
         private void Awake()
         {
             _characterController =  GetComponent<CharacterController>();
         }
 
+        private void OnEnable()
+        {
+            _inputReader.Moving += OnMoveInput;
+            _inputReader.Jumping += Jump;
+        }
+        
+        private void OnDisable()
+        {
+            _inputReader.Moving -= OnMoveInput;
+            _inputReader.Jumping -= Jump;
+        }
+        
         private void Update()
         {
             Movement();
-
-            if (Input.GetMouseButtonDown(0))
-            {
-                _shotgun.Shoot(_camera.position, _camera.forward);
-            }
         }
 
         private void Movement()
@@ -39,30 +43,30 @@ namespace Character
             Vector3 forward = Vector3.ProjectOnPlane(_camera.forward, Vector3.up).normalized;
             Vector3 right = Vector3.ProjectOnPlane(_camera.right, Vector3.up).normalized;
             
-            if (_characterController.isGrounded)
+            Vector3 horizontal =
+                forward * (_moveInput.x * _forwardSpeed) +
+                right   * (_moveInput.y * _strafeSpeed);
+
+            if (_characterController.isGrounded && _verticalVelocity < 0f)
             {
-                Vector3 direction = forward * (Input.GetAxisRaw("Vertical") * _forwardSpeed);
-                direction += right * (Input.GetAxisRaw("Horizontal") * _strafeSpeed);
-                
-                if (Input.GetKeyDown(KeyCode.Space))
-                {
-                    _verticalVelocity = Vector3.up * _jumpSpeed;
-                }
-                else
-                {
-                    _verticalVelocity = Vector3.down;
-                }
-                
-                _characterController.Move((direction + _verticalVelocity) * Time.deltaTime);
+                _verticalVelocity = -2f;
             }
-            else
-            {
-                Vector3 horizontalVelocity = _characterController.velocity;
-                horizontalVelocity.y = 0;
-                _verticalVelocity += Physics.gravity * (Time.deltaTime * _gravityFactor);
-                
-                _characterController.Move((horizontalVelocity + _verticalVelocity) * Time.deltaTime);
-            }
+            
+            _verticalVelocity += Physics.gravity.y * _gravityFactor * Time.deltaTime;
+            _characterController.Move((horizontal + Vector3.up * _verticalVelocity) * Time.deltaTime);
+            _moveInput = Vector2.zero;
+        }
+
+        private void OnMoveInput(Vector2 input)
+        {
+            _moveInput = input;
+        }
+        
+        private void Jump()
+        {
+            if (_characterController.isGrounded == false || _verticalVelocity > 0f)
+                return;
+            _verticalVelocity = _jumpSpeed;
         }
     }
 }

@@ -39,9 +39,6 @@ namespace ShotgunDirectory
             _particleSystem.Play();
         
             yield return new WaitForEndOfFrame();
-            yield return new WaitForEndOfFrame();
-            yield return new WaitForEndOfFrame();
-            yield return new WaitForEndOfFrame();
         
             _lightSource.SetActive(false);
         }
